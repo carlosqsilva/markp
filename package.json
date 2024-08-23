@@ -1,0 +1,37 @@
+{
+	"name": "markp",
+	"version": "0.1.0",
+	"packageManager": "pnpm@9.5.0",
+	"description": "CLI to convert HTML into markdown",
+	"author": "Carlos Silva <carlosqsilva@outlook.com>",
+	"license": "MIT",
+	"homepage": "https://github.com/carlosqsilva/markp#readme",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/carlosqsilva/markp.git"
+	},
+	"main": "./dist/index.js",
+	"bin": "./dist/markp.js",
+	"files": ["dist"],
+	"scripts": {
+		"prepublishOnly": "pnpm run build",
+		"release": "bumpp && npm publish",
+		"dev": "tsx watch index.ts",
+		"build": "tsx esbuild.ts"
+	},
+	"dependencies": {
+		"@mozilla/readability": "^0.5.0",
+		"@types/turndown": "^5.0.5",
+		"happy-dom": "^15.0.0",
+		"ky": "^1.7.1",
+		"turndown": "^7.2.0",
+		"valibot": "^0.38.0"
+	},
+	"devDependencies": {
+		"@types/node": "^22.5.0",
+		"@types/turndown": "^5.0.5",
+		"bumpp": "^9.5.2",
+		"esbuild": "^0.23.1",
+		"tsx": "^4.17.0"
+	}
+}
