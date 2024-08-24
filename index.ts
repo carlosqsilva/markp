@@ -7,12 +7,6 @@ import TurndownService from "turndown";
 import * as v from "valibot";
 import ky from "ky";
 
-const validateUrlSchema = v.pipe(
-	v.string(),
-	v.transform((str) => str.trim()),
-	v.url("Invalid URL"),
-);
-
 function defined<T>(item: T): item is Exclude<T, null | undefined> {
 	return item !== undefined && item !== null;
 }
@@ -33,7 +27,12 @@ async function getDocument(url: string) {
 		process.exit(1);
 	}
 
-	return page.mainFrame.document.cloneNode(true);
+	const document = page.mainFrame.document.cloneNode(true);
+
+	page.close();
+	browser.close();
+
+	return document;
 }
 
 function extractPageContent(document: Document) {
@@ -109,9 +108,11 @@ async function extractGithubContent(url: string) {
 	return { success: false };
 }
 
-function isGithubURL(url: string) {
-	return url.startsWith("https://github.com/");
-}
+const validateUrlSchema = v.pipe(
+	v.string(),
+	v.transform((str) => str.trim()),
+	v.url("Invalid URL"),
+);
 
 async function markp(urlStr: string) {
 	const result = v.safeParse(validateUrlSchema, urlStr);
@@ -126,7 +127,7 @@ async function markp(urlStr: string) {
 	const url = result.output;
 
 	// special handling for github URLs
-	if (isGithubURL(url)) {
+	if (url.startsWith("https://github.com/")) {
 		const { success, md } = await extractGithubContent(url);
 		if (success) return md;
 	}
@@ -141,7 +142,11 @@ async function markp(urlStr: string) {
 		return;
 	}
 
-	const markdown = turndown.turndown(article?.content ?? "");
+	let markdown = turndown.turndown(article.content);
+
+	if (defined(article.title)) {
+		markdown = `# ${article.title}\n\n${markdown}`;
+	}
 
 	return markdown;
 }
