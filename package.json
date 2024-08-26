@@ -1,7 +1,7 @@
 {
 	"name": "markp",
 	"version": "0.1.2",
-	"packageManager": "pnpm@9.5.0",
+	"packageManager": "pnpm@9.9.0",
 	"description": "CLI to convert HTML into markdown",
 	"author": "Carlos Silva <carlosqsilva@outlook.com>",
 	"license": "MIT",
