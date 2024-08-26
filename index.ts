@@ -1,11 +1,11 @@
 #!/usr/bin/env node
 
 import { writeFileSync } from "node:fs";
-import { Browser } from "happy-dom";
 import { Readability } from "@mozilla/readability";
+import { Browser } from "happy-dom";
+import ky from "ky";
 import TurndownService from "turndown";
 import * as v from "valibot";
-import ky from "ky";
 
 function defined<T>(item: T): item is Exclude<T, null | undefined> {
 	return item !== undefined && item !== null;
@@ -52,7 +52,7 @@ function extractPageContent(document: Document) {
 	return reader.parse();
 }
 
-async function extractGithubContent(url: string) {
+export async function extractGithubContent(url: string) {
 	const { repo } =
 		/^https:\/\/github\.com\/(?<repo>[a-z0-9.]+\/[a-z0-9.]+)/.exec(url)
 			?.groups ?? {};
@@ -114,7 +114,7 @@ const validateUrlSchema = v.pipe(
 	v.url("Invalid URL"),
 );
 
-async function markp(urlStr: string) {
+export async function markp(urlStr: string) {
 	const result = v.safeParse(validateUrlSchema, urlStr);
 
 	if (!result.success) {

@@ -17,7 +17,11 @@
 		"prepublishOnly": "pnpm run build",
 		"release": "bumpp && npm publish",
 		"dev": "tsx watch index.ts",
-		"build": "tsx esbuild.ts"
+		"build": "tsx esbuild.ts",
+		"test": "vitest",
+		"lint": "biome check index.ts",
+		"fix": "biome check --write index.ts",
+		"ci": "pnpm run build && pnpm run lint && pnpm run test"
 	},
 	"dependencies": {
 		"@mozilla/readability": "^0.5.0",
@@ -28,10 +32,13 @@
 		"valibot": "^0.38.0"
 	},
 	"devDependencies": {
+		"@biomejs/biome": "^1.8.3",
 		"@types/node": "^22.5.0",
 		"@types/turndown": "^5.0.5",
 		"bumpp": "^9.5.2",
 		"esbuild": "^0.23.1",
-		"tsx": "^4.17.0"
+		"msw": "^2.3.5",
+		"tsx": "^4.17.0",
+		"vitest": "^2.0.5"
 	}
 }
