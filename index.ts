@@ -52,12 +52,19 @@ function extractPageContent(document: Document) {
 	return reader.parse();
 }
 
-export async function extractGithubContent(url: string) {
-	const { repo } =
-		/^https:\/\/github\.com\/(?<repo>[a-z0-9.]+\/[a-z0-9.]+)/.exec(url)
-			?.groups ?? {};
+export function parseGithubURL(url: string) {
+	const { repo = null } =
+		/^https:\/\/github\.com\/(?<repo>[\w-\.]+\/[\w-\.]+)/.exec(url)?.groups ??
+		{};
 
-	const { path } = /\/blob\/(?<path>.+\.[a-z]+)$/.exec(url)?.groups ?? {};
+	const { path = null } =
+		/\/blob\/(?<path>.+\.[a-z]+)$/.exec(url)?.groups ?? {};
+
+	return { repo, path };
+}
+
+export async function extractGithubContent(url: string) {
+	const { path, repo } = parseGithubURL(url);
 
 	if (defined(path) && defined(repo)) {
 		const fileExtension = path.split(".").at(-1);

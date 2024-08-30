@@ -1,5 +1,26 @@
-import { test, expect, vi } from "vitest";
-import { extractGithubContent, markp } from "../index";
+import { test, expect } from "vitest";
+import { extractGithubContent, parseGithubURL, markp } from "../index";
+
+test("Should parse Github URL", () => {
+	const items = [
+		{
+			url: "https://github.com/carlosqsilva/newsletter-scraper",
+			repo: "carlosqsilva/newsletter-scraper",
+			path: null,
+		},
+		{
+			url: "https://github.com/carlosqsilva/markp/blob/main/esbuild.ts",
+			repo: "carlosqsilva/markp",
+			path: "main/esbuild.ts",
+		},
+	];
+	for (const item of items) {
+		expect(parseGithubURL(item.url)).toStrictEqual({
+			repo: item.repo,
+			path: item.path,
+		});
+	}
+});
 
 test("Should extract github readme file", async () => {
 	const repoURL = "https://github.com/carlosqsilva/markp";
