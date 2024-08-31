@@ -4,7 +4,7 @@
 	"exports": "./index.mts",
 	"license": "MIT",
 	"publish": {
-		"include": ["index.mts"],
+		"include": ["index.mts", "README.md"],
 		"exclude": ["test"]
 	}
 }
