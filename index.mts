@@ -44,7 +44,10 @@ function extractPageContent(document: Document) {
 	return reader.parse();
 }
 
-export function parseGithubURL(url: string) {
+export function parseGithubURL(url: string): {
+	repo: string | null;
+	path: string | null;
+} {
 	const { repo = null } =
 		/^https:\/\/github\.com\/(?<repo>[\w-\.]+\/[\w-\.]+)/.exec(url)?.groups ??
 		{};
@@ -55,7 +58,9 @@ export function parseGithubURL(url: string) {
 	return { repo, path };
 }
 
-export async function extractGithubContent(url: string) {
+export async function extractGithubContent(
+	url: string,
+): Promise<string | null> {
 	const { path, repo } = parseGithubURL(url);
 
 	if (defined(path) && defined(repo)) {
@@ -65,16 +70,10 @@ export async function extractGithubContent(url: string) {
 			.text();
 
 		if (fileExtension?.toLowerCase() === "md") {
-			return {
-				success: true,
-				md: file,
-			};
+			return file;
 		}
 
-		return {
-			success: true,
-			md: `\`\`\`${fileExtension}\n${file}\n\`\`\``,
-		};
+		return `\`\`\`${fileExtension}\n${file}\n\`\`\``;
 	}
 
 	if (defined(repo)) {
@@ -97,13 +96,10 @@ export async function extractGithubContent(url: string) {
 			)
 			.text();
 
-		return {
-			success: true,
-			md: readmeFile,
-		};
+		return readmeFile;
 	}
 
-	return { success: false };
+	return null;
 }
 
 const validateUrlSchema = v.pipe(
@@ -112,13 +108,13 @@ const validateUrlSchema = v.pipe(
 	v.url("Invalid URL"),
 );
 
-export async function tomd(urlStr: string) {
+export async function tomd(urlStr: string): Promise<string> {
 	const url = v.parse(validateUrlSchema, urlStr);
 
 	// special handling for github URLs
 	if (url.startsWith("https://github.com/")) {
-		const { success, md } = await extractGithubContent(url);
-		if (success) return md;
+		const content = await extractGithubContent(url);
+		if (defined(content)) return content;
 	}
 
 	const document = await getDocument(url);
