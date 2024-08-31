@@ -1,12 +1,16 @@
 
 # markp
 
-CLI to convert HTML into markdown
+Library/CLI to convert HTML into markdown
 
-## Install
+## Install C
 
 ```sh
+# cli is available on npm as "markp"
 npm i -g markp
+
+# library is available in jsr as "tomd"
+pnpm dlx jsr add @ch/tomd
 ```
 
 ## Usage
