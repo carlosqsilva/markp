@@ -1,6 +1,3 @@
-#!/usr/bin/env node
-
-import { writeFileSync } from "node:fs";
 import { Readability } from "@mozilla/readability";
 import { Browser } from "happy-dom";
 import ky from "ky";
@@ -20,12 +17,7 @@ async function getDocument(url: string) {
 
 	const page = browser.newPage();
 
-	try {
-		await page.goto(url);
-	} catch (e) {
-		console.error(`Failed to fetch: ${url}`);
-		process.exit(1);
-	}
+	await page.goto(url);
 
 	const document = page.mainFrame.document.cloneNode(true);
 
@@ -96,8 +88,7 @@ export async function extractGithubContent(url: string) {
 		);
 
 		if (!success) {
-			console.error(`Failed to get default branch for repo: ${repo}`);
-			process.exitCode = 1;
+			throw new Error(`Failed to get default branch for repo: ${repo}`);
 		}
 
 		const readmeFile = await ky
@@ -121,17 +112,8 @@ const validateUrlSchema = v.pipe(
 	v.url("Invalid URL"),
 );
 
-export async function markp(urlStr: string) {
-	const result = v.safeParse(validateUrlSchema, urlStr);
-
-	if (!result.success) {
-		const [issue] = result.issues;
-		console.error(issue.message);
-		process.exitCode = 1;
-		return;
-	}
-
-	const url = result.output;
+export async function tomd(urlStr: string) {
+	const url = v.parse(validateUrlSchema, urlStr);
 
 	// special handling for github URLs
 	if (url.startsWith("https://github.com/")) {
@@ -144,9 +126,7 @@ export async function markp(urlStr: string) {
 	const turndown = new TurndownService();
 
 	if (!defined(article?.content) || article.content === "") {
-		console.error("Failed to extract page content");
-		process.exitCode = 1;
-		return;
+		throw new Error("Failed to extract page content");
 	}
 
 	let markdown = turndown.turndown(article.content);
@@ -157,8 +137,3 @@ export async function markp(urlStr: string) {
 
 	return markdown;
 }
-
-const [maybeUrl] = process.argv.slice(2);
-markp(maybeUrl).then((content) => {
-	if (content) writeFileSync(1, content);
-});

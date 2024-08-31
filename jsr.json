@@ -1,0 +1,9 @@
+{
+	"name": "@carlos/tomd",
+	"version": "0.1.2",
+	"exports": "./index.mts",
+	"publish": {
+		"include": ["index.mts"],
+		"exclude": ["test"]
+	}
+}

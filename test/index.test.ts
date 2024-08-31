@@ -1,5 +1,5 @@
 import { test, expect } from "vitest";
-import { extractGithubContent, parseGithubURL, markp } from "../index";
+import { extractGithubContent, parseGithubURL, tomd } from "../index.mts";
 
 test("Should parse Github URL", () => {
 	const items = [
@@ -36,14 +36,14 @@ test("Should extract github source file", async () => {
 	expect(result).toHaveProperty("md", "```ts\n# test\n```");
 });
 
+test("Should include page title", async () => {
+	await expect(tomd("http://content.com")).resolves.toBe("# title\n\ncontent");
+});
+
 test("Should return nothing on invalid URL", async () => {
-	await expect(markp("invalid")).resolves.toBe(undefined);
+	await expect(tomd("invalid")).rejects.toThrowError();
 });
 
 test("Should return nothing on empty page content", async () => {
-	await expect(markp("http://empty.com")).resolves.toBe(undefined);
-});
-
-test("Should include page title", async () => {
-	await expect(markp("http://content.com")).resolves.toBe("# title\n\ncontent");
+	await expect(tomd("http://empty.com")).rejects.toThrowError();
 });

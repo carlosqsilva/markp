@@ -15,13 +15,12 @@ function emptyDir(dir: string) {
 	}
 }
 
-const outputDir = path.resolve(__dirname, "./dist");
+const outputDir = path.resolve(import.meta.dirname, "./dist");
 console.log(`Cleaning Output Dir: ${outputDir}`);
 emptyDir(outputDir);
 
-const { peerDependencies, devDependencies } = require("./package.json");
+import { devDependencies } from "./package.json";
 const externalPackages = Object.keys({
-	...peerDependencies,
 	...devDependencies,
 });
 
@@ -31,11 +30,11 @@ const externalPackages = Object.keys({
 		bundle: true,
 		keepNames: true,
 		metafile: true,
-		outfile: path.resolve(__dirname, "./dist/markp.js"),
-		format: "cjs",
+		outfile: path.resolve(import.meta.dirname, "./dist/markp.js"),
+		format: "esm",
 		platform: "node",
 		target: "esnext",
-		entryPoints: ["./index.ts"],
+		entryPoints: ["./bin.ts"],
 		external: externalPackages,
 	});
 

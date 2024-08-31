@@ -1,5 +1,6 @@
 {
 	"name": "markp",
+	"type": "module",
 	"version": "0.1.2",
 	"packageManager": "pnpm@9.9.0",
 	"description": "CLI to convert HTML into markdown",
@@ -10,17 +11,16 @@
 		"type": "git",
 		"url": "git+https://github.com/carlosqsilva/markp.git"
 	},
-	"main": "./dist/index.js",
 	"bin": "./dist/markp.js",
 	"files": ["dist"],
 	"scripts": {
 		"prepublishOnly": "pnpm run build",
 		"release": "bumpp && npm publish",
-		"dev": "tsx watch index.ts",
-		"build": "tsx esbuild.ts",
+		"dev": "tsx watch index.mts",
+		"build": "tsx esbuild.mts",
 		"test": "vitest",
-		"lint": "biome check index.ts",
-		"fix": "biome check --write index.ts",
+		"lint": "biome check index.mts",
+		"fix": "biome check --write index.mts",
 		"ci": "pnpm run build && pnpm run lint && pnpm run test"
 	},
 	"dependencies": {
