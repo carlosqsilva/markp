@@ -25,15 +25,19 @@ test("Should parse Github URL", () => {
 test("Should extract github readme file", async () => {
 	const repoURL = "https://github.com/carlosqsilva/markp";
 	const result = await extractGithubContent(repoURL);
-	expect(result).toHaveProperty("success", true);
-	expect(result).toHaveProperty("md", "# test");
+	expect(result).toStrictEqual("# test");
 });
 
 test("Should extract github source file", async () => {
 	const repoURL = "https://github.com/carlosqsilva/markp/blob/main/index.ts";
 	const result = await extractGithubContent(repoURL);
-	expect(result).toHaveProperty("success", true);
-	expect(result).toHaveProperty("md", "```ts\n# test\n```");
+	expect(result).toStrictEqual("```ts\n# test\n```");
+});
+
+test("Should return null to invalid github url", async () => {
+	const repoURL = "https://githu.com/carlosqsilva/markp";
+	const result = await extractGithubContent(repoURL);
+	expect(result).toBeNull();
 });
 
 test("Should include page title", async () => {

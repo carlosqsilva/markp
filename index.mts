@@ -1,3 +1,20 @@
+/**
+ * @module
+ * This module include functions to Convert HTML to Markdown
+ *
+ * @example
+ * ```ts
+ * import { tomd } from "@ch/tomd"
+ *
+ * await tomd("https://news.ycombinator.com/item?id=41410684") // page content in markdown
+ *
+ * // special handling for Github url
+ * await tomd("https://github.com/carlosqsilva/markp") // extract project Readme file
+ *
+ * await tomd("https://github.com/carlosqsilva/markp/main/index.ts") // file in markdown with code block
+ * ```
+ */
+
 import { Readability } from "@mozilla/readability";
 import { Browser } from "happy-dom";
 import ky from "ky";
@@ -44,6 +61,11 @@ function extractPageContent(document: Document) {
 	return reader.parse();
 }
 
+/**
+ * extract repo and file path from Github URL
+ * @param url Github url
+ * @returns
+ */
 export function parseGithubURL(url: string): {
 	repo: string | null;
 	path: string | null;
@@ -58,6 +80,10 @@ export function parseGithubURL(url: string): {
 	return { repo, path };
 }
 
+/**
+ * Extract content from Github URL
+ * @param url
+ */
 export async function extractGithubContent(
 	url: string,
 ): Promise<string | null> {
