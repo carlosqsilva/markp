@@ -3,7 +3,7 @@
 
 Library/CLI to convert HTML into markdown
 
-## Install C
+## Install
 
 ```sh
 # cli is available on npm as "markp"
